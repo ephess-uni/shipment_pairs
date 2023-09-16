@@ -34,7 +34,9 @@ def remove_intra(shipments):
     """remove_intra removes any records in which the origin and destination are the
     same country.
     """
-    pass
+    filtered_shipments=[shipment for shipment in shipments if shipment[0]!=shipment[1]]
+    return filtered_shipments
+   
 
 
 def collect_pairs(shipments):
@@ -44,6 +46,7 @@ def collect_pairs(shipments):
     The resulting fields (since origin and destinations are on the same row) will
     be:
         COUNTRY_A, COUNTRY_B, QUANTITY_AB, QUANTITY_BA
+    shipment_count=
 
     Example:
     >>> shipments = [
