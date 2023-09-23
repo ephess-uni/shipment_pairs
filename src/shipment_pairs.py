@@ -34,7 +34,7 @@ def remove_intra(shipments):
     """remove_intra removes any records in which the origin and destination are the
     same country.
     """
-    pass
+    return [shipment for shipment in shipments if shipment[0] != shipment[1]]
 
 
 def collect_pairs(shipments):
@@ -61,18 +61,44 @@ def collect_pairs(shipments):
         ['IN', 'CA', 12, 5],
     ]
     """
-    pass
+    countries_shipments = {}
+
+    # assert that there are no intra
+    shipments = remove_intra(shipments)
+
+    # sort on quantity
+    shipments = sorted(shipments, key=lambda x: x[2], reverse=True)
+
+    for orig, dest, quant in shipments:
+        if (dest, orig) in countries_shipments:
+            countries_shipments[(dest, orig)].append(quant)
+        else:
+            countries_shipments[(orig, dest)] = [quant]
+    return [
+        [loc_a, loc_b, quant_ab, quant_ba] for (loc_a, loc_b), (quant_ab, quant_ba)
+        in countries_shipments.items()
+    ]
+
+
 
 
 if __name__ == '__main__':
+    little_shipments = [
+        ['US', 'IN', 14],
+        ['US', 'CA', 17],
+        ['IN', 'US', 8],
+        ['IN', 'CA', 12],
+        ['CA', 'US', 7],
+        ['CA', 'IN', 5],
+    ]
 
     # Part 1
-    export_only = remove_intra(SHIPMENTS)
+    export_only = remove_intra(little_shipments)
     print('#' * 80, ' ' * 30 + 'Intra Removed', '#' * 80, sep='\n')
     print(export_only)
 
     # Part 2
-    shipment_pairs = collect_pairs(SHIPMENTS)
+    shipment_pairs = collect_pairs(little_shipments)
     print('\n', '#' * 80, ' ' * 30 + 'Pairs collected', '#' * 80, sep='\n')
     print(shipment_pairs)
 
